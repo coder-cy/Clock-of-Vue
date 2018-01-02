@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<body>
+    <div id="app">  
+        <my-clock></my-clock>  
+    </div>  
+</body>
+<script>
+    var app = new Vue({  
+        el: '#app',  
+        components: {  
+            myClock: {  
+                data() {  
+                    return {  
+                        cssClock: {//整个钟的盒子  
+                            position: 'absolute',  
+                            width: '500px',  
+                            height: '500px',  
+                            border: '1px solid black',  
+                            borderRadius: '50%'  
+                        },  
+                        cssDotWrap: {//装刻度的盒子  
+                            transform: 'translateX(250px)'  
+                        },  
+                        cssDot: {//刻度们  
+                            position: 'absolute',  
+                            width: '2px',  
+                            backgroundColor: 'black'  
+                        },  
+                        cssNeedle: {//三根针  
+                            position: 'absolute',  
+                            left: '250px',  
+                            backgroundColor: 'black',  
+                            transformOrigin: 'center bottom'  
+                        },  
+                        currTime: new Date()//当前日期对象  
+                    }  
+                },  
+                computed: {  
+                    sec() {//将当前秒数转化为秒针旋转的度数  
+                        return this.currTime.getSeconds()*6;  
+                    },  
+                    min() {//将当前的分钟数转化为分针旋转的度数  
+                        return this.currTime.getMinutes()*6 + this.currTime.getSeconds()/10 ;  
+                    },  
+                    hour() {//将当前的小时数转化为时针旋转的度数  
+                        return this. currTime.getHours()*30 + this.currTime.getMinutes()/2;  
+                    }  
+                },  
+                template: `  
+                    <div :style="cssClock">  
+                        <div :style="cssDotWrap">  
+                            <div   
+                                :style="Object.assign({},{  
+                                    transform: 'rotateZ('+i*6+'deg)',  
+                                    height: i%5==0?'30px':'10px',  
+                                    transformOrigin: '0px 250px'  
+                                },cssDot)"   
+                                v-for="(dot,i) in 60"  
+                            ></div>  
+                        </div>  
+                        <div   
+                            :style="Object.assign({},{  
+                                width: '8px',  
+                                height: '200px',  
+                                top: '50px',  
+                                marginLeft: '-4px',  
+                                transform: 'rotateZ('+hour+'deg)'  
+                            },cssNeedle)"  
+                        ></div>  
+                        <div   
+                            :style="Object.assign({},{  
+                                width: '4px',  
+                                height: '230px',  
+                                top: '20px',  
+                                marginLeft: '-2px',  
+                                transform: 'rotateZ('+min+'deg)'  
+                            },cssNeedle)"  
+                        ></div>  
+                        <div   
+                            :style="Object.assign({},{  
+                                width: '2px',  
+                                height: '250px',  
+                                marginLeft: '-1px',  
+                                transform: 'rotateZ('+sec+'deg)'  
+                            },cssNeedle)"  
+                        ></div>  
+                    </div>  
+                `,  
+                created() {  
+                    setInterval(()=>{//钩子函数，在实例创建的时候运行定时器，我们只需要动态刷新当前的日期对象即可  
+                        this.currTime = new Date();  
+                    },1000)  
+                }  
+            }  
+        }  
+    })      
+</script>
+</html>
